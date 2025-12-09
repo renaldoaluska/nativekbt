@@ -29,9 +29,9 @@
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">SEKN</h1>
       <nav class="space-x-4 flex items-center">
-        <a href="../index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <!--<a href="../index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>-->
         <a href="sell.html" class="text-[#3d2a22] font-semibold hover:underline">Jual Barang</a>
-        <a href="earnings.html" class="text-[#3d2a22] font-semibold hover:underline">Pendapatan</a>
+        <!--<a href="earnings.html" class="text-[#3d2a22] font-semibold hover:underline">Pendapatan</a>-->
         <span id="authArea" class="ml-4"></span>
       </nav>
     </div>
@@ -39,7 +39,7 @@
 
   <!-- Main -->
   <main class="max-w-5xl mx-auto px-4 py-10">
-    <h2 class="text-2xl font-bold mb-6">Daftar Barang Dijual</h2>
+    <h2 class="text-2xl font-bold mb-6">Daftar Barang yang Kamu Jual</h2>
     <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </main>
 
@@ -67,22 +67,68 @@
       window.location.reload();
     }
 
-    const listings = JSON.parse(localStorage.getItem("listings") || "[]");
     const container = document.getElementById("listingsContainer");
 
-    if (listings.length === 0) {
-      container.innerHTML = `<p class="text-center text-[#6b5f55]">Belum ada barang yang dijual.</p>`;
+    // Hardcoded items
+    const hardcoded = [
+      {
+        id: "iphone12",
+        name: "iPhone 12 128GB",
+        description: "Lolos inspeksi. Layar mulus, baterai 90%, siap pakai.",
+        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800",
+        validator: "Aman Cell — Surabaya",
+        status: "verified"
+      },
+      {
+        id: "dummy-checking",
+        name: "Samsung Galaxy A52",
+        description: "Sedang dicek oleh validator.",
+        image: "https://images.samsung.com/is/image/samsung/p6pim/id/sm-a525fzkhxid/gallery/id-galaxy-a52-5g-a525-sm-a525fzkhxid-368306-sm-a525fzkhxid-368306-Thumb-720x720",
+        validator: "Servisindo Mobile — Jakarta",
+        status: "checking"
+      }
+    ];
+
+    const listings = JSON.parse(localStorage.getItem("listings") || "[]");
+    const allItems = [...hardcoded, ...listings];
+
+    if (allItems.length === 0) {
+      container.innerHTML = `<p class="text-center text-[#6b5f55]">Belum ada barang yang kamu jual.</p>`;
     } else {
-      container.innerHTML = listings.map(item => `
-        <div class="bg-[#fffaf3] rounded-xl shadow p-4 flex flex-col">
-          <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover rounded-md mb-4" />
+      container.innerHTML = allItems.map((item, index) => {
+        const isPending = item.status === "pending";
+        const isChecking = item.status === "checking";
+        const isVerified = item.status === "verified";
+        const isHardcoded = index < hardcoded.length;
+
+        const imageTag = `<img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover rounded-md mb-4" />`;
+        const content = `
           <h3 class="text-lg font-bold mb-1">${item.name}</h3>
-          <p class="text-sm text-[#6b5f55] mb-1">Rp ${item.price.toLocaleString("id-ID")}</p>
-          <p class="text-sm text-[#6b5f55] mb-1">Kondisi: ${item.condition}</p>
+          <p class="text-sm text-[#6b5f55] mb-1">${item.description.slice(0, 60)}...</p>
+          <p class="text-sm text-[#6b5f55] mb-1">Validator: ${item.validator}</p>
           <p class="text-sm text-[#6b5f55] mb-2">Status: <span class="font-semibold text-[#3d2a22]">${item.status}</span></p>
-          <button class="mt-auto bg-white border border-[#d6cfc7] text-[#2b251f] font-semibold py-2 rounded-md hover:bg-[#f0eae4] transition">Edit</button>
-        </div>
-      `).join("");
+          ${
+            isPending
+              ? `<button onclick="cancelListing(${index - hardcoded.length})" class="mt-auto bg-red-100 text-red-700 font-semibold py-2 rounded-md hover:bg-red-200 transition">Batalkan</button>`
+              : isChecking
+              ? `<button disabled class="mt-auto bg-gray-200 text-gray-500 font-semibold py-2 rounded-md cursor-not-allowed">Sedang Dicek</button>`
+              : ``
+          }
+        `;
+
+        return isVerified
+          ? `<a href="detail-penjual.html?id=${item.id}" class="block bg-[#fffaf3] rounded-xl shadow p-4 hover:shadow-md transition">${imageTag}${content}</a>`
+          : `<div class="bg-[#fffaf3] rounded-xl shadow p-4 flex flex-col">${imageTag}${content}</div>`;
+      }).join("");
+    }
+
+    function cancelListing(index) {
+      const listings = JSON.parse(localStorage.getItem("listings") || "[]");
+      if (index >= 0 && index < listings.length) {
+        listings.splice(index, 1);
+        localStorage.setItem("listings", JSON.stringify(listings));
+        window.location.reload();
+      }
     }
   </script>
 
