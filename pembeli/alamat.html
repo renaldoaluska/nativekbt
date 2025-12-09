@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alamat Pengiriman — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4 flex items-center">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
+        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+        <span id="authArea" class="ml-4"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-2xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-bold mb-6">Alamat Pengiriman</h2>
+
+    <form id="alamatForm" class="bg-[#fffaf3] p-6 rounded-xl shadow space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Nama Penerima</label>
+        <input type="text" id="nama" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Nomor HP</label>
+        <input type="tel" id="hp" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Provinsi</label>
+        <select id="provinsi" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2">
+          <option value="">Pilih Provinsi</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Kota/Kabupaten</label>
+        <select id="kota" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2">
+          <option value="">Pilih Kota/Kabupaten</option>
+        </select>
+      </div>
+      <div id="kelurahanGroup" class="hidden">
+        <label class="block text-sm font-semibold mb-1">Kelurahan</label>
+        <select id="kelurahan" class="w-full border border-[#d6cfc7] rounded-md px-3 py-2">
+          <option value="">Pilih Kelurahan</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Alamat Lengkap</label>
+        <textarea id="alamatLengkap" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" rows="3"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Kode Pos</label>
+        <input type="text" id="kodepos" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" />
+      </div>
+
+      <div class="flex gap-4 pt-2">
+        <button type="submit" class="flex-1 bg-[#b06a3c] text-white font-semibold py-3 rounded-md hover:bg-[#a05d2f] transition">Simpan Alamat</button>
+        <button type="button" onclick="window.history.back()" class="flex-1 bg-white border border-[#d6cfc7] text-[#2b251f] font-semibold py-3 rounded-md hover:bg-[#f0eae4] transition">Batal</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const provinsiList = [
+      "Aceh","Bali","Banten","Bengkulu","DI Yogyakarta","DKI Jakarta","Gorontalo","Jambi","Jawa Barat","Jawa Tengah","Jawa Timur",
+      "Kalimantan Barat","Kalimantan Selatan","Kalimantan Tengah","Kalimantan Timur","Kalimantan Utara",
+      "Kepulauan Bangka Belitung","Kepulauan Riau","Lampung","Maluku","Maluku Utara",
+      "Nusa Tenggara Barat","Nusa Tenggara Timur","Papua","Papua Barat","Papua Barat Daya","Papua Pegunungan",
+      "Papua Selatan","Papua Tengah","Riau","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tengah",
+      "Sulawesi Tenggara","Sulawesi Utara","Sumatera Barat","Sumatera Selatan","Sumatera Utara"
+    ];
+
+    const dataWilayah = {
+      "DKI Jakarta": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Selatan", "Jakarta Timur", "Jakarta Barat"],
+      "Jawa Barat": ["Bekasi", "Depok", "Bogor"],
+      "Banten": ["Tangerang", "Tangerang Selatan"],
+      "Jawa Timur": ["Surabaya"]
+    };
+
+    const kelurahanSurabaya = ["Mulyorejo", "Darmo", "Ketintang", "Rungkut", "Wonokromo"];
+
+    const provinsiSelect = document.getElementById("provinsi");
+    const kotaSelect = document.getElementById("kota");
+    const kelurahanGroup = document.getElementById("kelurahanGroup");
+    const kelurahanSelect = document.getElementById("kelurahan");
+
+    provinsiList.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p;
+      opt.textContent = p;
+      provinsiSelect.appendChild(opt);
+    });
+
+    provinsiSelect.addEventListener("change", () => {
+      const selected = provinsiSelect.value;
+      const kotaList = dataWilayah[selected] || [];
+      kotaSelect.innerHTML = "<option value=''>Pilih Kota/Kabupaten</option>";
+      kotaList.forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        opt.textContent = k;
+        kotaSelect.appendChild(opt);
+      });
+      kelurahanGroup.classList.add("hidden");
+    });
+
+    kotaSelect.addEventListener("change", () => {
+      if (kotaSelect.value === "Surabaya") {
+        kelurahanGroup.classList.remove("hidden");
+        kelurahanSelect.innerHTML = "<option value=''>Pilih Kelurahan</option>";
+        kelurahanSurabaya.forEach(kel => {
+          const opt = document.createElement("option");
+          opt.value = kel;
+          opt.textContent = kel;
+          kelurahanSelect.appendChild(opt);
+        });
+      } else {
+        kelurahanGroup.classList.add("hidden");
+      }
+    });
+
+    document.getElementById("alamatForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const alamat = {
+        nama: document.getElementById("nama").value,
+        hp: document.getElementById("hp").value,
+        provinsi: provinsiSelect.value,
+        kota: kotaSelect.value,
+        kelurahan: kelurahanSelect.value || null,
+        alamat: document.getElementById("alamatLengkap").value,
+        kodepos: document.getElementById("kodepos").value
+      };
+      localStorage.setItem("alamat", JSON.stringify(alamat));
+      window.location.href = "profile.html";
+    });
+
+     // Prefill jika ada data sebelumnya
+    const saved = JSON.parse(localStorage.getItem("alamat") || "null");
+    if (saved) {
+      document.getElementById("nama").value = saved.nama || "";
+      document.getElementById("hp").value = saved.hp || "";
+      document.getElementById("alamatLengkap").value = saved.alamat || "";
+      document.getElementById("kodepos").value = saved.kodepos || "";
+
+      // Set provinsi
+      if (saved.provinsi) {
+        provinsiSelect.value = saved.provinsi;
+        const kotaList = dataWilayah[saved.provinsi] || [];
+        kotaSelect.innerHTML = "<option value=''>Pilih Kota/Kabupaten</option>";
+        kotaList.forEach(k => {
+          const opt = document.createElement("option");
+          opt.value = k;
+          opt.textContent = k;
+          kotaSelect.appendChild(opt);
+        });
+      }
+
+      // Set kota
+      if (saved.kota) {
+        kotaSelect.value = saved.kota;
+        if (saved.kota === "Surabaya") {
+          kelurahanGroup.classList.remove("hidden");
+          kelurahanSelect.innerHTML = "<option value=''>Pilih Kelurahan</option>";
+          kelurahanSurabaya.forEach(kel => {
+            const opt = document.createElement("option");
+            opt.value = kel;
+            opt.textContent = kel;
+            kelurahanSelect.appendChild(opt);
+          });
+          kelurahanSelect.value = saved.kelurahan || "";
+        }
+      }
+    }
+
+    // Login UI
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.getElementById("authArea");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
+  </script>
+
+</body>
+</html>

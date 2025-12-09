@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    #toast {
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4 flex items-center">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
+        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+        <span id="authArea" class="ml-4"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-bold mb-6">Checkout</h2>
+
+    <!-- Alamat -->
+    <section id="alamatSection" class="bg-[#fffaf3] p-6 rounded-xl shadow mb-8 text-sm"></section>
+
+    <!-- Ringkasan Pesanan -->
+    <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
+      <h3 class="text-lg font-semibold mb-4">Ringkasan Pesanan</h3>
+      <div id="orderItems" class="space-y-4 text-sm mb-4"></div>
+      <div class="flex justify-between text-sm mb-1">
+        <span>Total Produk</span>
+        <span id="totalHarga">Rp 0</span>
+      </div>
+      <div class="flex justify-between text-sm mb-1">
+        <span>Total Ongkir</span>
+        <span id="totalOngkir">Rp 0</span>
+      </div>
+      <hr class="my-2 border-[#e0d6cc]">
+      <div class="flex justify-between font-bold text-base">
+        <span>Total Bayar</span>
+        <span id="grandTotal">Rp 0</span>
+      </div>
+      <button id="bayarBtn" onclick="bayarSekarang()" disabled class="mt-5 w-full bg-gray-400 text-white font-semibold py-3 rounded-md cursor-not-allowed">Bayar Sekarang</button>
+      <p id="statusMsg" class="text-green-600 text-sm mt-2"></p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-[#2b251f] text-white text-sm px-4 py-2 rounded-md shadow-lg hidden z-50">
+    Pembayaran berhasil!
+  </div>
+
+  <!-- Script -->
+  <script>
+    const ongkirMap = {
+      "Jakarta": 20000,
+      "Bekasi": 22000,
+      "Depok": 22000,
+      "Bogor": 23000,
+      "Tangerang": 22000,
+      "Tangerang Selatan": 22000,
+      "Surabaya": 25000,
+      "Bandung": 22000
+    };
+
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const alamat = JSON.parse(localStorage.getItem("alamat") || "null");
+
+    const orderItems = document.getElementById("orderItems");
+    const alamatSection = document.getElementById("alamatSection");
+    const bayarBtn = document.getElementById("bayarBtn");
+
+    let totalHarga = 0;
+    let totalOngkir = 0;
+
+    // Tampilkan alamat
+    if (!alamat) {
+      alamatSection.innerHTML = `
+        <p class="mb-2">📍 <strong>Alamat Pengiriman:</strong> <span class="text-red-600">Belum ada alamat</span></p>
+        <a href="alamat.html" class="bg-[#b06a3c] text-white px-4 py-2 rounded-md inline-block">Pilih Alamat</a>
+      `;
+    } else {
+      const kota = alamat.kota;
+      const ongkir = ongkirMap[kota] || 30000;
+      totalOngkir = ongkir;
+
+      alamatSection.innerHTML = `
+        <p class="mb-1">📍 <strong>${alamat.nama}</strong> (${alamat.hp})</p>
+        <p class="mb-1">${alamat.alamat}, Kel. ${alamat.kelurahan || "-"}, ${alamat.kota}, ${alamat.provinsi}, ${alamat.kodepos}</p>
+        <p class="text-[#6b5f55]">Estimasi Ongkir: <strong>Rp ${ongkir.toLocaleString("id-ID")}</strong></p>
+        <a href="alamat.html" class="text-sm text-[#b06a3c] underline mt-2 inline-block">Ubah Alamat</a>
+      `;
+      bayarBtn.disabled = false;
+      bayarBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
+      bayarBtn.classList.add("bg-[#b06a3c]", "hover:bg-[#a05d2f]");
+    }
+
+    // Tampilkan item
+    cart.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "flex items-start gap-4";
+      div.innerHTML = `
+        <img src="${item.image || 'https://via.placeholder.com/80x60?text=Produk'}" class="w-20 h-16 object-cover rounded-md" />
+        <div class="flex-1">
+          <div class="font-semibold">${item.name}</div>
+          <div class="text-sm text-[#6b5f55]">${item.validator || '-'}</div>
+        </div>
+        <div class="text-right font-semibold">Rp ${item.price.toLocaleString("id-ID")}</div>
+      `;
+      orderItems.appendChild(div);
+      totalHarga += item.price;
+    });
+
+    document.getElementById("totalHarga").textContent = "Rp " + totalHarga.toLocaleString("id-ID");
+    document.getElementById("totalOngkir").textContent = "Rp " + totalOngkir.toLocaleString("id-ID");
+    document.getElementById("grandTotal").textContent = "Rp " + (totalHarga + totalOngkir).toLocaleString("id-ID");
+
+    function bayarSekarang() {
+      const alamat = JSON.parse(localStorage.getItem("alamat") || "null");
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+      const newOrder = {
+        id: Date.now(),
+        items: cart,
+        alamat: alamat,
+        total: totalHarga + totalOngkir,
+        tanggal: new Date().toLocaleString("id-ID")
+      };
+
+      orders.push(newOrder);
+      localStorage.setItem("orders", JSON.stringify(orders));
+      localStorage.removeItem("cart");
+
+      showToast("✓ Pembayaran berhasil!");
+      document.getElementById("statusMsg").textContent = "✓ Pembayaran berhasil! Terima kasih telah belanja di SEKN.";
+      setTimeout(() => {
+        window.location.href = "profile.html";
+      }, 2000);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      toast.classList.add("opacity-100");
+      setTimeout(() => toast.classList.add("hidden"), 2500);
+    }
+
+        // Login UI
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.getElementById("authArea");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
+  </script>
+
+</body>
+</html>

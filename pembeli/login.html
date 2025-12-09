@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — SEKN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
+        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow flex items-center justify-center px-4 py-10">
+    <div class="bg-[#fffaf3] p-8 rounded-xl shadow w-full max-w-sm">
+      <h2 class="text-xl font-bold mb-6 text-center">Login ke SEKN</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Email</label>
+          <input type="email" id="email" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1">Password</label>
+          <input type="password" id="password" required class="w-full border border-[#d6cfc7] rounded-md px-3 py-2" />
+        </div>
+        <button type="submit" class="w-full bg-[#b06a3c] text-white font-semibold py-3 rounded-md hover:bg-[#a05d2f] transition">Login</button>
+        <p id="errorMsg" class="text-sm text-red-600 mt-2 hidden">Email atau password salah.</p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (email === "testing@mail.com" && password === "testing") {
+        const user = {
+          id: "testing",
+          nama: "Testing",
+          email: "testing@mail.com"
+        };
+        localStorage.setItem("user", JSON.stringify(user));
+        window.location.href = "index.html";
+      } else {
+        errorMsg.classList.remove("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>

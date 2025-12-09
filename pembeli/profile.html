@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profil — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4 flex items-center">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
+        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+        <span id="authArea" class="ml-4"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-3xl mx-auto px-4 py-10 space-y-10">
+    <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
+      <h2 class="text-xl font-bold mb-4">👤 Profil Pengguna</h2>
+      <div id="profilInfo" class="text-sm text-[#3d2a22] space-y-1"></div>
+    </section>
+
+    <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
+      <h2 class="text-xl font-bold mb-4">📦 Riwayat Pesanan</h2>
+      <div id="orderList" class="space-y-6 text-sm text-[#3d2a22]"></div>
+      <p id="noOrders" class="text-[#6b5f55]">Belum ada pesanan.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const profil = JSON.parse(localStorage.getItem("alamat") || "null");
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const profilInfo = document.getElementById("profilInfo");
+    const orderList = document.getElementById("orderList");
+    const noOrders = document.getElementById("noOrders");
+
+    if (profil) {
+      profilInfo.innerHTML = `
+        <p><strong>Nama:</strong> ${profil.nama}</p>
+        <p><strong>Nomor HP:</strong> ${profil.hp}</p>
+        <p><strong>Alamat:</strong> ${profil.alamat}, Kel. ${profil.kelurahan || "-"}, ${profil.kota}, ${profil.provinsi}, ${profil.kodepos}</p>
+        <a href="alamat.html" class="inline-block mt-3 text-sm text-[#b06a3c] underline">Ubah Alamat</a>
+      `;
+    } else {
+      profilInfo.innerHTML = `<p class="text-[#6b5f55]">Belum ada data profil. Silakan isi alamat di halaman checkout.</p>`;
+    }
+
+    if (orders.length > 0) {
+      noOrders.classList.add("hidden");
+      orders.reverse().forEach((order, index) => {
+        const div = document.createElement("div");
+        div.className = "border border-[#e0d6cc] rounded-lg p-4";
+        div.innerHTML = `
+          <div class="flex justify-between items-center mb-2">
+            <div class="font-semibold">Pesanan #${order.id}</div>
+            <div class="text-xs text-[#6b5f55]">${order.tanggal}</div>
+          </div>
+          <ul class="list-disc pl-5 mb-2">
+            ${order.items.map(item => `<li>${item.name} — Rp ${item.price.toLocaleString("id-ID")}</li>`).join("")}
+          </ul>
+          <button onclick="toggleDetail(${index})" class="text-sm text-[#b06a3c] underline">Lihat Detail</button>
+          <div id="detail-${index}" class="mt-3 hidden bg-[#fefcf9] border border-[#e0d6cc] rounded-md p-4 space-y-2">
+            <p><strong>Alamat Tujuan:</strong><br>${order.alamat.nama} (${order.alamat.hp})<br>${order.alamat.alamat}, Kel. ${order.alamat.kelurahan || "-"}, ${order.alamat.kota}, ${order.alamat.provinsi}, ${order.alamat.kodepos}</p>
+            <p><strong>Alamat Asal:</strong><br>
+              ${order.items.map(item => `${item.name}: ${item.validator || "Tidak diketahui"}`).join("<br>")}
+            </p>
+            <p><strong>Total Produk:</strong> Rp ${order.items.reduce((sum, i) => sum + i.price, 0).toLocaleString("id-ID")}</p>
+            <p><strong>Ongkir:</strong> Rp ${(order.total - order.items.reduce((sum, i) => sum + i.price, 0)).toLocaleString("id-ID")}</p>
+            <p class="font-bold"><strong>Total Bayar:</strong> Rp ${order.total.toLocaleString("id-ID")}</p>
+          </div>
+        `;
+        orderList.appendChild(div);
+      });
+    }
+
+    function toggleDetail(index) {
+      const detail = document.getElementById(`detail-${index}`);
+      detail.classList.toggle("hidden");
+    }
+
+    // Login UI
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.createElement("span");
+    authArea.className = "ml-4";
+    const nav = document.querySelector("nav");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
+    }
+
+    nav.appendChild(authArea);
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
+  </script>
+
+</body>
+</html>
