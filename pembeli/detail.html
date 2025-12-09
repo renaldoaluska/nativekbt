@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detail Produk — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
+        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-3xl mx-auto px-4 py-10" id="productDetail"></main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const produk = {
+      iphone12: {
+        nama: "iPhone 12 128GB",
+        harga: 5200000,
+        grade: "A",
+        deskripsi: "Nyaris mulus, tanpa lecet signifikan",
+        gambar: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800",
+        validator: "Aman Cell — Surabaya",
+        spesifikasi: ["RAM: 4GB", "Storage: 128GB", "Baterai: 85%", "Warna: Hitam", "Garansi SEKN: 30 hari", "Tahun Pembelian: 2022", "Umur Pakai: ±2 tahun"],
+        inspeksi: [
+          ["Layar", "Tidak retak, responsif", "success"],
+          ["Kamera", "Fokus normal", "success"],
+          ["Speaker & Mic", "Suara jernih", "success"],
+          ["Tombol Fisik", "Semua berfungsi", "success"],
+          ["IMEI", "Terdaftar resmi", "success"],
+          ["Face ID", "Berfungsi normal", "success"],
+          ["Reset Pabrik", "Sudah dilakukan", "success"],
+          ["Charger & Kabel", "Original", "success"]
+        ],
+        catatan: "Tidak ditemukan kerusakan. Ada sedikit gores halus di sisi kanan frame, tidak memengaruhi fungsi."
+      },
+      galaxyS21: {
+        nama: "Samsung Galaxy S21",
+        harga: 4800000,
+        grade: "B",
+        deskripsi: "Normal, ada bekas pakai ringan",
+        gambar: "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6441/6441108_sd.jpg",
+        validator: "Servisindo Mobile — Jakarta",
+        spesifikasi: ["RAM: 8GB", "Storage: 128GB", "Baterai: 80%", "Warna: Silver", "Garansi SEKN: 30 hari", "Tahun Pembelian: 2021", "Umur Pakai: ±3 tahun"],
+        inspeksi: [
+          ["Layar", "Sedikit gores halus", "warning"],
+          ["Kamera", "Fokus normal", "success"],
+          ["Speaker & Mic", "Suara jernih", "success"],
+          ["Tombol Fisik", "Semua berfungsi", "success"],
+          ["IMEI", "Terdaftar resmi", "success"],
+          ["Face ID", "Tidak tersedia", "danger"],
+          ["Reset Pabrik", "Sudah dilakukan", "success"],
+          ["Charger & Kabel", "Original", "success"]
+        ],
+        catatan: "Ada bekas pakai ringan di sisi belakang, tidak memengaruhi fungsi."
+      },
+      redmi10: {
+        nama: "Xiaomi Redmi Note 10",
+        harga: 2200000,
+        grade: "C",
+        deskripsi: "Fungsi normal, body lecet terlihat",
+        gambar: "https://i01.appmifile.com/webfile/globalimg/products/pc/redmi-note-10/gallery01.png",
+        validator: "GadgetCare — Bandung",
+        spesifikasi: ["RAM: 4GB", "Storage: 64GB", "Baterai: 78%", "Warna: Biru", "Garansi SEKN: 30 hari", "Tahun Pembelian: 2021", "Umur Pakai: ±3 tahun"],
+        inspeksi: [
+          ["Layar", "Sedikit shadow di pojok kanan", "warning"],
+          ["Kamera", "Fokus normal", "success"],
+          ["Speaker & Mic", "Mic agak kecil", "warning"],
+          ["Tombol Fisik", "Semua berfungsi", "success"],
+          ["IMEI", "Terdaftar resmi", "success"],
+          ["Face ID", "Tidak tersedia", "danger"],
+          ["Reset Pabrik", "Sudah dilakukan", "success"],
+          ["Charger & Kabel", "Bukan original", "warning"]
+        ],
+        catatan: "Body belakang ada lecet sedang. Mic agak kecil tapi masih bisa digunakan untuk telepon."
+      }
+    };
+
+    const ongkirMap = {
+      "Surabaya": 25000,
+      "Jakarta": 20000,
+      "Bandung": 18000
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const data = produk[id];
+    const container = document.getElementById("productDetail");
+
+    if (!data) {
+      container.innerHTML = `<p class="text-center text-red-600 font-semibold">Produk tidak ditemukan.</p>`;
+    } else {
+      const kota = data.validator.split("—")[1].trim();
+      const ongkir = ongkirMap[kota] || 30000;
+
+      container.innerHTML = `
+        <img src="${data.gambar}" alt="${data.nama}" class="w-full h-64 object-cover rounded-xl shadow mb-6" />
+        <h1 class="text-2xl font-bold mb-2">${data.nama}</h1>
+        <div class="flex items-center gap-2 text-sm text-[#6b5f55] mb-2">
+          <span class="font-medium">Grade ${data.grade}</span>
+          <div class="relative group cursor-pointer text-[#3d2a22]">
+            ⓘ
+            <div class="absolute hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 bottom-full left-0 mb-1 w-48 z-10">
+              ${data.deskripsi}
+            </div>
+          </div>
+        </div>
+        <p class="text-xl font-bold mb-1">Rp ${data.harga.toLocaleString("id-ID")}</p>
+        <p class="text-sm text-[#6b5f55]">Dikirim dari: <span class="font-semibold text-[#3d2a22]">${data.validator}</span></p>
+        <p class="text-sm text-[#6b5f55] mb-6">Estimasi ongkir: <span class="font-semibold text-[#3d2a22]">Rp ${ongkir.toLocaleString("id-ID")}</span></p>
+
+        <section class="bg-[#fffaf3] rounded-xl shadow p-5 mb-6">
+          <h2 class="text-lg font-semibold mb-3">Spesifikasi</h2>
+          <ul class="text-sm text-[#3d2a22] space-y-1">
+            ${data.spesifikasi.map(item => `<li>${item}</li>`).join("")}
+          </ul>
+        </section>
+
+        <section class="bg-[#fffaf3] rounded-xl shadow p-5 mb-6">
+          <h2 class="text-lg font-semibold mb-4">Hasil Inspeksi</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            ${data.inspeksi.map(([judul, deskripsi, status]) => {
+              const icon = status === "success" ? "✅" : status === "warning" ? "⚠️" : "❌";
+              const color = status === "success" ? "text-green-600" : status === "warning" ? "text-yellow-500" : "text-red-600";
+              return `
+                <div class="flex items-start gap-3 bg-white p-3 rounded-lg shadow">
+                  <div class="${color} text-xl">${icon}</div>
+                  <div>
+                    <div class="font-semibold">${judul}</div>
+                    <p class="text-[#6b5f55]">${deskripsi}</p>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </section>
+
+        <section class="bg-[#fffaf3] rounded-xl shadow p-5 mb-6">
+          <h2 class="text-lg font-semibold mb-2">Catatan Inspektor</h2>
+          <p class="text-sm text-[#3d2a22]">${data.catatan}</p>
+        </section>
+
+        <button id="addCartBtn" class="w-full bg-[#b06a3c] text-white font-semibold py-3 rounded-md hover:bg-[#a05d2f] transition">Add to Cart</button>
+        <p id="statusMsg" class="text-sm text-green-600 mt-2"></p>
+      `;
+
+      document.getElementById("addCartBtn").addEventListener("click", () => {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        cart.push({ id, name: data.nama, price: data.harga });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        const status = document.getElementById("statusMsg");
+        status.textContent = "✓ Ditambahkan ke cart.";
+        setTimeout(() => status.textContent = "", 1500);
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype Zhuanzhuan Lite</title>
+    <style>
+        /* CSS SEDERHANA BIAR RAPI */
+        :root { --primary: #ff3d00; --bg: #f5f5f5; --white: #fff; --gray: #ddd; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 480px; margin: 0 auto; background: var(--white); min-height: 80vh; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; position: relative;}
+        
+        /* HEADER & NAV */
+        header { background: var(--white); padding: 15px; border-bottom: 1px solid var(--gray); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        h2 { margin: 0; font-size: 18px; }
+        .badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        
+        /* SCREENS TRANSITION */
+        .screen { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* COMPONENTS */
+        .card { border: 1px solid var(--gray); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: #fff; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 1px solid #ccc; color: #333; }
+        .btn-danger { background: #d32f2f; color: white; }
+        .btn-success { background: #388e3c; color: white; }
+
+        /* FORM WIZARD */
+        .option-group { margin-bottom: 20px; }
+        .option-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .radio-btn { display: flex; gap: 10px; }
+        .radio-btn div { flex: 1; padding: 10px; border: 1px solid var(--gray); text-align: center; border-radius: 6px; cursor: pointer; font-size: 13px;}
+        .radio-btn div.selected { border-color: var(--primary); background: #fff5f2; color: var(--primary); font-weight: bold; }
+
+        /* UTILS */
+        .price-tag { color: var(--primary); font-size: 20px; font-weight: bold; }
+        .role-switcher { display: flex; gap: 5px; margin-bottom: 10px; justify-content: center; padding: 10px; background: #333; color: white; border-radius: 8px;}
+        .role-btn { background: #555; border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;}
+        .role-btn.active { background: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="role-switcher">
+            <span>Mode:</span>
+            <button class="role-btn active" onclick="switchRole('seller')">Seller</button>
+            <button class="role-btn" onclick="switchRole('validator')">Validator (QC)</button>
+            <button class="role-btn" onclick="switchRole('buyer')">Buyer</button>
+        </div>
+
+        <header>
+            <h2 id="page-title">Jual HP Bekas</h2>
+            <span class="badge" onclick="location.reload()">Reset App</span>
+        </header>
+
+        <div id="screen-seller" class="screen active">
+            <div class="card">
+                <p>Pilih HP yang mau dijual:</p>
+                <select id="model-select" class="btn btn-outline" style="text-align: left; margin-top:0;">
+                    <option value="iphone11">iPhone 11 (Base: Rp 5.000.000)</option>
+                    <option value="iphone12">iPhone 12 (Base: Rp 7.000.000)</option>
+                    <option value="samsung_s21">Samsung S21 (Base: Rp 6.000.000)</option>
+                </select>
+            </div>
+
+            <div class="option-group">
+                <label>1. Layar Nyala?</label>
+                <div class="radio-btn" id="q1">
+                    <div onclick="selectOption('q1', this, 0)" class="selected">Normal</div>
+                    <div onclick="selectOption('q1', this, -3000000)">Mati Total</div>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>2. Kondisi Fisik Layar</label>
+                <div class="radio-btn" id="q2">
+                    <div onclick="selectOption('q2', this, 0)" class="selected">Mulus</div>
+                    <div onclick="selectOption('q2', this, -500000)">Baret</div>
+                    <div onclick="selectOption('q2', this, -1500000)">Retak</div>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label>3. Body / Casing</label>
+                <div class="radio-btn" id="q3">
+                    <div onclick="selectOption('q3', this, 0)" class="selected">Mulus</div>
+                    <div onclick="selectOption('q3', this, -300000)">Lecet</div>
+                    <div onclick="selectOption('q3', this, -800000)">Penyok</div>
+                </div>
+            </div>
+
+            <div class="card" style="background: #fff5f2; border-color: var(--primary);">
+                <small>Estimasi Harga Kamu:</small>
+                <div id="live-price" class="price-tag">Rp 5.000.000</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="submitToValidator()">Kirim ke Inspeksi</button>
+        </div>
+
+        <div id="screen-validator" class="screen">
+            <h3>Antrean Inspeksi</h3>
+            <div id="validator-list">
+                <p style="color: #999; text-align: center; margin-top: 50px;">Belum ada barang masuk.</p>
+            </div>
+        </div>
+
+        <div id="screen-buyer" class="screen">
+            <h3>Marketplace (Verified Items)</h3>
+            <div id="marketplace-list">
+                <p style="color: #999; text-align: center; margin-top: 50px;">Belum ada barang siap jual.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. DATA & STATE (Pura-pura Database) ---
+        const BASE_PRICES = {
+            'iphone11': 5000000,
+            'iphone12': 7000000,
+            'samsung_s21': 6000000
+        };
+
+        // Simpan data di Memory Browser
+        let currentRole = 'seller';
+        let currentDeduction = 0;
+        
+        // "Database" Tabel
+        let pendingInspections = []; // Barang dari Seller
+        let marketplaceItems = [];   // Barang lolos QC
+
+        // --- 2. LOGIC SELLER (Hitung Harga) ---
+        function selectOption(groupId, el, priceDrop) {
+            // Visual selection
+            let options = document.getElementById(groupId).children;
+            for(let opt of options) opt.classList.remove('selected');
+            el.classList.add('selected');
+
+            // Recalculate Logic
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let model = document.getElementById('model-select').value;
+            let base = BASE_PRICES[model];
+            
+            // Loop cari yang selected
+            let totalDeduction = 0;
+            document.querySelectorAll('.selected').forEach(el => {
+                // Ambil nilai minus dari onclick attribute (agak hacky tapi simple)
+                let attr = el.getAttribute('onclick'); 
+                let match = attr.match(/, (-?\d+)\)/); // Regex ambil angka di parameter terakhir
+                if(match) totalDeduction += parseInt(match[1]);
+            });
+
+            let finalPrice = base + totalDeduction;
+            if(finalPrice < 0) finalPrice = 0;
+
+            document.getElementById('live-price').innerText = formatRupiah(finalPrice);
+            return { model, finalPrice, base };
+        }
+
+        function submitToValidator() {
+            let data = calculateTotal();
+            let item = {
+                id: Date.now(), // ID Unik
+                model: data.model,
+                sellerPrice: data.finalPrice, // Harga klaim seller
+                status: 'Pending QC'
+            };
+            
+            pendingInspections.push(item);
+            alert("Barang berhasil dikirim ke Validator!");
+            
+            // Reset Form
+            location.reload(); 
+        }
+
+        // --- 3. LOGIC VALIDATOR (QC) ---
+        function renderValidatorList() {
+            let container = document.getElementById('validator-list');
+            container.innerHTML = "";
+
+            if(pendingInspections.length === 0) {
+                container.innerHTML = '<p style="color:#999; text-align:center;">Kosong bang.</p>';
+                return;
+            }
+
+            pendingInspections.forEach((item, index) => {
+                let html = `
+                <div class="card">
+                    <strong>${item.model.toUpperCase()}</strong>
+                    <p>Klaim Seller: ${formatRupiah(item.sellerPrice)}</p>
+                    <hr>
+                    <small>POV Validator: Cek fisik, ternyata layar baret?</small>
+                    <br>
+                    <button class="btn btn-outline" style="font-size:12px; padding:5px;" onclick="adjustPrice(${index}, -500000)">⚠️ Revisi Harga (-500rb)</button>
+                    <button class="btn btn-success" onclick="approveItem(${index})">✅ Approve & Jual</button>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function adjustPrice(index, amount) {
+            pendingInspections[index].sellerPrice += amount;
+            renderValidatorList(); // Refresh UI
+        }
+
+        function approveItem(index) {
+            let item = pendingInspections[index];
+            marketplaceItems.push(item); // Pindah ke tabel Marketplace
+            pendingInspections.splice(index, 1); // Hapus dari antrean
+            renderValidatorList();
+            alert("Barang diapprove! Sekarang muncul di menu Buyer.");
+        }
+
+        // --- 4. LOGIC BUYER ---
+        function renderMarketplace() {
+            let container = document.getElementById('marketplace-list');
+            container.innerHTML = "";
+
+            if(marketplaceItems.length === 0) {
+                container.innerHTML = '<p style="color:#999; text-align:center;">Toko tutup (kosong).</p>';
+                return;
+            }
+
+            marketplaceItems.forEach(item => {
+                let html = `
+                <div class="card">
+                    <div style="background:#e0f7fa; color:#006064; padding:5px; border-radius:4px; display:inline-block; font-size:10px; margin-bottom:5px;">✅ LULUS INSPEKSI</div>
+                    <h3 style="margin:5px 0">${item.model.toUpperCase()}</h3>
+                    <div class="price-tag">${formatRupiah(item.sellerPrice)}</div>
+                    <button class="btn btn-primary">Beli Sekarang</button>
+                </div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function switchRole(role) {
+            // Update UI Button Role
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+            // Show target screen
+            if (role === 'seller') {
+                document.getElementById('screen-seller').classList.add('active');
+                document.getElementById('page-title').innerText = "Jual HP Bekas";
+            } else if (role === 'validator') {
+                document.getElementById('screen-validator').classList.add('active');
+                document.getElementById('page-title').innerText = "Dashboard QC";
+                renderValidatorList();
+            } else if (role === 'buyer') {
+                document.getElementById('screen-buyer').classList.add('active');
+                document.getElementById('page-title').innerText = "Beli HP Verified";
+                renderMarketplace();
+            }
+        }
+
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+        }
+
+        // Init Price on Load
+        calculateTotal(); 
+        // Pasang Event Listener buat Select Model
+        document.getElementById('model-select').addEventListener('change', calculateTotal);
+
+    </script>
+</body>
+</html>
