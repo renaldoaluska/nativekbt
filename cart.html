@@ -88,9 +88,13 @@
       });
 
       summary.innerHTML = `
-        <div class="bg-[#fffaf3] rounded-xl shadow p-6 mt-6">
-          <p class="text-lg font-semibold mb-2">Total: Rp ${total.toLocaleString("id-ID")}</p>
-          <a href="checkout.html" class="inline-block mt-2 bg-[#b06a3c] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#a05d2f]">Checkout</a>
+        <div class="bg-[#fffaf3] rounded-xl shadow p-6 mt-6 space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span>Total Produk</span>
+            <span>Rp ${total.toLocaleString("id-ID")}</span>
+          </div>
+          <p class="text-[#6b5f55] text-xs mt-1">* Ongkir akan dihitung saat checkout berdasarkan alamat pengiriman</p>
+          <a href="checkout.html" class="block text-center mt-4 bg-[#b06a3c] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#a05d2f]">Checkout</a>
         </div>
       `;
     }

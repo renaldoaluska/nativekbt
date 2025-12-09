@@ -24,10 +24,11 @@
   <header class="bg-[#fffaf3] shadow">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">SEKN</h1>
-      <nav class="space-x-4">
+      <nav class="space-x-4 flex items-center">
         <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
         <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
         <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
+        <span id="authArea" class="ml-4"></span>
       </nav>
     </div>
   </header>
@@ -58,6 +59,7 @@
 
   <!-- Script -->
   <script>
+    // Login form handler
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
@@ -68,7 +70,8 @@
         const user = {
           id: "testing",
           nama: "Testing",
-          email: "testing@mail.com"
+          email: "testing@mail.com",
+          hp: "08123456789"
         };
         localStorage.setItem("user", JSON.stringify(user));
         window.location.href = "index.html";
@@ -76,6 +79,24 @@
         errorMsg.classList.remove("hidden");
       }
     });
+
+    // Login UI
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.getElementById("authArea");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
   </script>
 
 </body>

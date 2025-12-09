@@ -84,6 +84,12 @@
 
   <!-- Script -->
   <script>
+    // Cek login
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      window.location.href = "login.html";
+    }
+
     const ongkirMap = {
       "Jakarta": 20000,
       "Bekasi": 22000,
@@ -120,7 +126,7 @@
         <p class="mb-1">📍 <strong>${alamat.nama}</strong> (${alamat.hp})</p>
         <p class="mb-1">${alamat.alamat}, Kel. ${alamat.kelurahan || "-"}, ${alamat.kota}, ${alamat.provinsi}, ${alamat.kodepos}</p>
         <p class="text-[#6b5f55]">Estimasi Ongkir: <strong>Rp ${ongkir.toLocaleString("id-ID")}</strong></p>
-        <a href="alamat.html" class="text-sm text-[#b06a3c] underline mt-2 inline-block">Ubah Alamat</a>
+        <a href="alamat.html?from=checkout" class="text-sm text-[#b06a3c] underline mt-2 inline-block">Ubah Alamat</a>
       `;
       bayarBtn.disabled = false;
       bayarBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
@@ -175,22 +181,16 @@
       const toast = document.getElementById("toast");
       toast.textContent = message;
       toast.classList.remove("hidden");
-      toast.classList.add("opacity-100");
+            toast.classList.add("opacity-100");
       setTimeout(() => toast.classList.add("hidden"), 2500);
     }
 
-        // Login UI
-    const user = JSON.parse(localStorage.getItem("user"));
+    // Login UI (lanjutan dari atas)
     const authArea = document.getElementById("authArea");
-
-    if (user) {
-      authArea.innerHTML = `
-        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
-        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
-      `;
-    } else {
-      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
-    }
+    authArea.innerHTML = `
+      <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+      <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+    `;
 
     function logout() {
       localStorage.removeItem("user");

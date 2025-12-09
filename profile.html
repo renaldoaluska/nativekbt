@@ -7,8 +7,6 @@
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -39,11 +37,19 @@
 
   <!-- Main -->
   <main class="max-w-3xl mx-auto px-4 py-10 space-y-10">
+    <!-- Profil Pengguna -->
     <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
       <h2 class="text-xl font-bold mb-4">👤 Profil Pengguna</h2>
       <div id="profilInfo" class="text-sm text-[#3d2a22] space-y-1"></div>
     </section>
 
+    <!-- Alamat Pengiriman -->
+    <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
+      <h2 class="text-xl font-bold mb-4">📍 Alamat Pengiriman</h2>
+      <div id="alamatInfo" class="text-sm text-[#3d2a22] space-y-1"></div>
+    </section>
+
+    <!-- Riwayat Pesanan -->
     <section class="bg-[#fffaf3] p-6 rounded-xl shadow">
       <h2 class="text-xl font-bold mb-4">📦 Riwayat Pesanan</h2>
       <div id="orderList" class="space-y-6 text-sm text-[#3d2a22]"></div>
@@ -58,23 +64,37 @@
 
   <!-- Script -->
   <script>
-    const profil = JSON.parse(localStorage.getItem("alamat") || "null");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      window.location.href = "login.html";
+    }
+
+    const alamat = JSON.parse(localStorage.getItem("alamat"));
     const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
     const profilInfo = document.getElementById("profilInfo");
+    const alamatInfo = document.getElementById("alamatInfo");
     const orderList = document.getElementById("orderList");
     const noOrders = document.getElementById("noOrders");
 
-    if (profil) {
-      profilInfo.innerHTML = `
-        <p><strong>Nama:</strong> ${profil.nama}</p>
-        <p><strong>Nomor HP:</strong> ${profil.hp}</p>
-        <p><strong>Alamat:</strong> ${profil.alamat}, Kel. ${profil.kelurahan || "-"}, ${profil.kota}, ${profil.provinsi}, ${profil.kodepos}</p>
+    // Tampilkan profil
+    profilInfo.innerHTML += `<p><strong>Nama Akun:</strong> ${user.nama}</p>`;
+    profilInfo.innerHTML += `<p><strong>Email:</strong> ${user.email}</p>`;
+    profilInfo.innerHTML += `<p><strong>Nomor HP:</strong> ${user.hp || "-"}</p>`;
+
+    // Tampilkan alamat
+    if (alamat) {
+      alamatInfo.innerHTML = `
+        <p><strong>Nama Penerima:</strong> ${alamat.nama}</p>
+        <p><strong>Nomor HP:</strong> ${alamat.hp}</p>
+        <p><strong>Alamat:</strong> ${alamat.alamat}, Kel. ${alamat.kelurahan || "-"}, ${alamat.kota}, ${alamat.provinsi}, ${alamat.kodepos}</p>
         <a href="alamat.html" class="inline-block mt-3 text-sm text-[#b06a3c] underline">Ubah Alamat</a>
       `;
     } else {
-      profilInfo.innerHTML = `<p class="text-[#6b5f55]">Belum ada data profil. Silakan isi alamat di halaman checkout.</p>`;
+      alamatInfo.innerHTML = `<p class="text-[#6b5f55]">Belum ada data alamat. Silakan isi alamat di halaman checkout.</p>`;
     }
 
+    // Tampilkan pesanan
     if (orders.length > 0) {
       noOrders.classList.add("hidden");
       orders.reverse().forEach((order, index) => {
@@ -109,21 +129,11 @@
     }
 
     // Login UI
-    const user = JSON.parse(localStorage.getItem("user"));
-    const authArea = document.createElement("span");
-    authArea.className = "ml-4";
-    const nav = document.querySelector("nav");
-
-    if (user) {
-      authArea.innerHTML = `
-        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
-        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
-      `;
-    } else {
-      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
-    }
-
-    nav.appendChild(authArea);
+    const authArea = document.getElementById("authArea");
+    authArea.innerHTML = `
+      <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+      <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+    `;
 
     function logout() {
       localStorage.removeItem("user");

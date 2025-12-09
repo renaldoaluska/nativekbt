@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alamat Pengiriman — SEKN</title>
-
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -91,7 +87,14 @@
 
   <!-- Script -->
   <script>
-    const provinsiList = [
+    // Tangkap asal akses dari query string
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get("from");
+    if (from) {
+      sessionStorage.setItem("alamatFrom", from);
+    }
+
+        const provinsiList = [
       "Aceh","Bali","Banten","Bengkulu","DI Yogyakarta","DKI Jakarta","Gorontalo","Jambi","Jawa Barat","Jawa Tengah","Jawa Timur",
       "Kalimantan Barat","Kalimantan Selatan","Kalimantan Tengah","Kalimantan Timur","Kalimantan Utara",
       "Kepulauan Bangka Belitung","Kepulauan Riau","Lampung","Maluku","Maluku Utara",
@@ -99,14 +102,12 @@
       "Papua Selatan","Papua Tengah","Riau","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tengah",
       "Sulawesi Tenggara","Sulawesi Utara","Sumatera Barat","Sumatera Selatan","Sumatera Utara"
     ];
-
     const dataWilayah = {
       "DKI Jakarta": ["Jakarta Pusat", "Jakarta Utara", "Jakarta Selatan", "Jakarta Timur", "Jakarta Barat"],
       "Jawa Barat": ["Bekasi", "Depok", "Bogor"],
       "Banten": ["Tangerang", "Tangerang Selatan"],
       "Jawa Timur": ["Surabaya"]
     };
-
     const kelurahanSurabaya = ["Mulyorejo", "Darmo", "Ketintang", "Rungkut", "Wonokromo"];
 
     const provinsiSelect = document.getElementById("provinsi");
@@ -161,10 +162,13 @@
         kodepos: document.getElementById("kodepos").value
       };
       localStorage.setItem("alamat", JSON.stringify(alamat));
-      window.location.href = "profile.html";
+
+      const redirectTo = sessionStorage.getItem("alamatFrom") || "profile";
+      sessionStorage.removeItem("alamatFrom");
+      window.location.href = redirectTo + ".html";
     });
 
-     // Prefill jika ada data sebelumnya
+    // Prefill jika ada data
     const saved = JSON.parse(localStorage.getItem("alamat") || "null");
     if (saved) {
       document.getElementById("nama").value = saved.nama || "";
@@ -172,7 +176,6 @@
       document.getElementById("alamatLengkap").value = saved.alamat || "";
       document.getElementById("kodepos").value = saved.kodepos || "";
 
-      // Set provinsi
       if (saved.provinsi) {
         provinsiSelect.value = saved.provinsi;
         const kotaList = dataWilayah[saved.provinsi] || [];
@@ -185,7 +188,6 @@
         });
       }
 
-      // Set kota
       if (saved.kota) {
         kotaSelect.value = saved.kota;
         if (saved.kota === "Surabaya") {
