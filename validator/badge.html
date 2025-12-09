@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Badge Resmi — SEKN</title>
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              jakarta: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      #toast {
+        transition: opacity 0.3s ease;
+      }
+      .badge-pill {
+        border-radius: 999px;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+    <!-- Header -->
+    <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold">SEKN</h1>
+        <nav class="space-x-4 flex items-center">
+          <a
+            href="../index.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Pembeli</a
+          >
+          <a
+            href="../penjual/index.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Penjual</a
+          >
+          <a href="index.html" class="text-[#b06a3c] font-semibold underline"
+            >Validator</a
+          >
+          <span id="authArea" class="ml-4"></span>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero / Breadcrumb -->
+    <section
+      class="bg-gradient-to-br from-[#fffaf3] to-[#f7f3ee] border-b border-[#e0d6cc]"
+    >
+      <div class="max-w-5xl mx-auto px-4 py-8">
+        <p class="text-xs text-[#6b5f55] mb-2">
+          <a href="index.html" class="hover:underline text-[#3d2a22]"
+            >Panel Validator</a
+          >
+          <span class="mx-1">/</span>
+          <span class="text-[#b06a3c] font-semibold">Badge Resmi</span>
+        </p>
+        <h2
+          id="badgeTitle"
+          class="text-2xl sm:text-3xl font-bold text-[#3d2a22] mb-2"
+        >
+          Badge Resmi SEKN
+        </h2>
+        <p id="badgeSubtitle" class="text-sm text-[#6b5f55] max-w-xl">
+          Atur status badge “Official Inspection” untuk produk terverifikasi.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main -->
+    <main class="max-w-5xl mx-auto px-4 py-8" id="badgeContainer">
+      <!-- Isi dinamis via JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]"
+    >
+      © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+    </footer>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 bg-[#2b251f] text-white text-sm px-4 py-2 rounded-md shadow-lg hidden z-50"
+    >
+      Tersimpan.
+    </div>
+
+    <!-- Script -->
+    <script>
+      // ===== DATA DUMMY (SAMA KAYA index validator) =====
+      const defaultInspeksi = [
+        {
+          id: "iphone12",
+          produk: "iPhone 12 128GB",
+          gambar:
+            "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=600",
+          mitra: "Aman Cell — Surabaya",
+          gradeSementara: "A (perkiraan)",
+          status: "menunggu",
+          risiko: "Tinggi",
+          sla: "Selesai < 2 jam",
+          badge: false,
+        },
+        {
+          id: "galaxyS21",
+          produk: "Samsung Galaxy S21",
+          gambar:
+            "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6441/6441108_sd.jpg",
+          mitra: "Servisindo Mobile — Jakarta",
+          gradeSementara: "B (perkiraan)",
+          status: "proses",
+          risiko: "Sedang",
+          sla: "Selesai hari ini",
+          badge: false,
+        },
+        {
+          id: "redmi10",
+          produk: "Xiaomi Redmi Note 10",
+          gambar:
+            "https://i01.appmifile.com/webfile/globalimg/products/pc/redmi-note-10/gallery01.png",
+          mitra: "GadgetCare — Bandung",
+          gradeSementara: "C (perkiraan)",
+          status: "menunggu",
+          risiko: "Sedang",
+          sla: "Selesai < 4 jam",
+          badge: false,
+        },
+        {
+          id: "iphone11",
+          produk: "iPhone 11 64GB",
+          gambar:
+            "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=600",
+          mitra: "iFix Mobile — Surabaya",
+          gradeSementara: "B (perkiraan)",
+          status: "proses",
+          risiko: "Rendah",
+          sla: "Follow-up kamera",
+          badge: true,
+        },
+        {
+          id: "realme8",
+          produk: "Realme 8",
+          gambar:
+            "https://images.unsplash.com/photo-1512491303613-9769b480c9c0?q=80&w=600",
+          mitra: "TechLab — Jakarta",
+          gradeSementara: "B (perkiraan)",
+          status: "selesai",
+          risiko: "Rendah",
+          sla: "Sudah selesai",
+          badge: true,
+        },
+      ];
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      const badgeContainer = document.getElementById("badgeContainer");
+      const storedInspeksi = JSON.parse(
+        localStorage.getItem("sekn_inspeksiData") || "null"
+      );
+      let inspeksiList = storedInspeksi || defaultInspeksi;
+      let task = inspeksiList.find((item) => item.id === id);
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.remove("hidden");
+        toast.classList.add("opacity-100");
+        setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 2500);
+      }
+
+      function renderPreviewBadge(isActive) {
+        if (!task) return "";
+        const baseClass =
+          "inline-flex items-center gap-1 badge-pill px-3 py-1 text-[11px] font-semibold";
+        if (isActive) {
+          return `
+          <span class="${baseClass} bg-green-600 text-white shadow">
+            <span>✅</span>
+            <span>SEKN Official Inspection</span>
+          </span>
+        `;
+        } else {
+          return `
+          <span class="${baseClass} bg-[#f3e3d7] text-[#b06a3c] border border-[#e0d6cc]">
+            <span>ⓘ</span>
+            <span>Belum ada badge resmi</span>
+          </span>
+        `;
+        }
+      }
+
+      function renderPage() {
+        if (!id || !task) {
+          badgeContainer.innerHTML = `
+          <div class="bg-[#fffaf3] rounded-xl border border-[#e0d6cc] px-6 py-8 text-center">
+            <p class="text-sm text-red-600 font-semibold mb-3">Produk / badge tidak ditemukan.</p>
+            <p class="text-xs text-[#6b5f55] mb-5">
+              Pastikan URL sudah benar atau kembali ke halaman validator.
+            </p>
+            <a href="index.html"
+              class="inline-block px-4 py-2 bg-[#b06a3c] text-white text-sm font-semibold rounded-md hover:bg-[#a05d2f]">
+              Kembali ke Panel Validator
+            </a>
+          </div>
+        `;
+          return;
+        }
+
+        document.getElementById(
+          "badgeTitle"
+        ).textContent = `Badge Resmi — ${task.produk}`;
+        document.getElementById(
+          "badgeSubtitle"
+        ).textContent = `Atur status badge “Official Inspection” untuk ${task.produk} dari mitra ${task.mitra}.`;
+
+        const active = !!task.badge;
+
+        badgeContainer.innerHTML = `
+        <!-- Ringkasan produk -->
+        <section class="bg-[#fffaf3] rounded-xl shadow p-5 mb-6">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <img src="${task.gambar}" alt="${task.produk}"
+                 class="w-full sm:w-40 h-32 object-cover rounded-lg">
+            <div class="flex-1">
+              <h1 class="text-lg sm:text-xl font-bold text-[#3d2a22] mb-1">
+                ${task.produk}
+              </h1>
+              <p class="text-xs text-[#6b5f55] mb-1">
+                Mitra verifikasi:
+                <span class="font-semibold text-[#3d2a22]">${task.mitra}</span>
+              </p>
+              <p class="text-xs text-[#6b5f55] mb-2">
+                Estimasi grade saat inspeksi:
+                <span class="font-semibold text-[#3d2a22]">${
+                  task.gradeSementara
+                }</span>
+              </p>
+
+              <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="badge-pill px-3 py-1 text-[11px] font-semibold ${
+                  active
+                    ? "bg-green-50 text-green-700 border border-green-100"
+                    : "bg-[#fffaf3] text-[#6b5f55] border border-[#e0d6cc]"
+                }">
+                  Status badge: ${active ? "Aktif" : "Belum aktif"}
+                </span>
+                <span class="badge-pill px-3 py-1 text-[11px] font-semibold bg-white border border-[#e0d6cc] text-[#3d2a22]">
+                  ID Produk: ${task.id}
+                </span>
+              </div>
+
+              <p class="text-xs text-[#6b5f55]">
+                Badge resmi SEKN menandakan bahwa perangkat sudah melalui proses inspeksi standar
+                dan lolos kriteria minimum kelayakan untuk dijual di platform.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pengaturan badge -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Kiri: aksi -->
+          <div class="lg:col-span-2 space-y-5">
+            <div class="bg-[#fffaf3] rounded-xl shadow p-5">
+              <h2 class="text-sm font-semibold text-[#3d2a22] mb-3">Atur Status Badge</h2>
+              <p class="text-xs text-[#6b5f55] mb-4">
+                Pilih salah satu aksi di bawah ini untuk mensimulasikan penerbitan atau pencabutan badge resmi.
+                Perubahan hanya disimpan di <code class="bg-[#f1ece6] px-1 rounded">localStorage</code> browser.
+              </p>
+
+              <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                <button id="btnAktifkan"
+                  class="flex-1 px-4 py-2 rounded-md text-sm font-semibold ${
+                    active
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-[#2b251f] text-white hover:bg-black"
+                  }">
+                  ${active ? "Perbarui Badge Aktif" : "Terbitkan Badge Resmi"}
+                </button>
+                <button id="btnNonaktifkan"
+                  class="flex-1 px-4 py-2 rounded-md text-sm font-semibold ${
+                    active
+                      ? "bg-white border border-red-300 text-red-600 hover:bg-red-50"
+                      : "bg-white border border-[#e0d6cc] text-[#6b5f55] hover:bg-[#f1ece6]"
+                  }">
+                  Cabut / Nonaktifkan Badge
+                </button>
+              </div>
+
+              <div class="text-[11px] text-[#6b5f55] space-y-1">
+                <p>✓ Badge hanya boleh diterbitkan jika:</p>
+                <ul class="list-disc list-inside ml-1">
+                  <li>Perangkat lulus cek IMEI & bukan barang hilang/silang.</li>
+                  <li>Tidak ada kerusakan fungsi mayor (tidak bisa menyala, sinyal mati total, dsb).</li>
+                  <li>Kondisi kosmetik masih sesuai standar minimum SEKN.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-[#fffaf3] rounded-xl shadow p-5">
+              <h2 class="text-sm font-semibold text-[#3d2a22] mb-3">Simulasi Checklist Kelayakan Badge</h2>
+              <ul class="text-xs text-[#3d2a22] space-y-1 list-disc list-inside">
+                <li>Validasi identitas penjual & bukti kepemilikan perangkat.</li>
+                <li>Cek IMEI pada database resmi (misalnya Kemenperin/Kominfo).</li>
+                <li>Cross-check hasil inspeksi fisik & fungsional.</li>
+                <li>Review catatan risiko (shadow, gores, baterai, dll).</li>
+                <li>Konfirmasi akhir oleh tim validator SEKN.</li>
+              </ul>
+              <p class="text-[11px] text-[#6b5f55] mt-3">
+                Di versi production, status checklist dan nama validator bisa dicatat per akun,
+                lengkap dengan timestamp dan log aktivitas.
+              </p>
+            </div>
+          </div>
+
+          <!-- Kanan: preview -->
+          <div class="space-y-5">
+            <div class="bg-[#fffaf3] rounded-xl shadow p-5">
+              <h2 class="text-sm font-semibold text-[#3d2a22] mb-3">Preview Badge di Halaman Produk</h2>
+              <div class="border border-[#e0d6cc] rounded-xl p-4 bg-white">
+                <p class="text-xs text-[#6b5f55] mb-2">Contoh tampilan di listing pembeli:</p>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-12 h-12 bg-[#f1ece6] rounded-lg flex items-center justify-center text-[10px] text-[#6b5f55]">
+                    IMG
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold text-[#3d2a22] mb-1">${
+                      task.produk
+                    }</p>
+                    <p class="text-[11px] text-[#6b5f55] mb-2">
+                      Diverifikasi oleh <span class="font-semibold">${
+                        task.mitra
+                      }</span>
+                    </p>
+                    <div id="previewBadgeArea">
+                      ${renderPreviewBadge(active)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#fffaf3] rounded-xl shadow p-5">
+              <h2 class="text-sm font-semibold text-[#3d2a22] mb-3">Navigasi</h2>
+              <div class="flex flex-col gap-2 text-sm">
+                <a href="report.html?id=${task.id}"
+                  class="px-4 py-2 bg-white border border-[#e0d6cc] text-[#3d2a22] rounded-md hover:bg-[#f1ece6] text-center">
+                  Lihat Laporan Inspeksi
+                </a>
+                <a href="index.html"
+                  class="px-4 py-2 bg-[#b06a3c] text-white rounded-md hover:bg-[#a05d2f] text-center">
+                  Kembali ke Daftar Task
+                </a>
+              </div>
+              <p class="mt-3 text-[11px] text-[#6b5f55]">
+                Semua perubahan di halaman ini hanya simulasi dan tidak terhubung ke backend.
+              </p>
+            </div>
+          </div>
+        </section>
+      `;
+
+        // Pasang handler button
+        const btnAktifkan = document.getElementById("btnAktifkan");
+        const btnNonaktifkan = document.getElementById("btnNonaktifkan");
+        const previewBadgeArea = document.getElementById("previewBadgeArea");
+
+        btnAktifkan.addEventListener("click", () => {
+          task.badge = true;
+          inspeksiList = inspeksiList.map((t) => (t.id === task.id ? task : t));
+          localStorage.setItem(
+            "sekn_inspeksiData",
+            JSON.stringify(inspeksiList)
+          );
+          previewBadgeArea.innerHTML = renderPreviewBadge(true);
+          showToast("Badge resmi diaktifkan untuk produk ini.");
+          renderPage(); // re-render biar state tombol & chip ke-refresh
+        });
+
+        btnNonaktifkan.addEventListener("click", () => {
+          task.badge = false;
+          inspeksiList = inspeksiList.map((t) => (t.id === task.id ? task : t));
+          localStorage.setItem(
+            "sekn_inspeksiData",
+            JSON.stringify(inspeksiList)
+          );
+          previewBadgeArea.innerHTML = renderPreviewBadge(false);
+          showToast("Badge resmi dinonaktifkan untuk produk ini.");
+          renderPage();
+        });
+      }
+
+      renderPage();
+
+      // ===== LOGIN UI (SHARED) =====
+      const user = JSON.parse(localStorage.getItem("user"));
+      const authArea = document.getElementById("authArea");
+
+      if (user) {
+        authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+      } else {
+        authArea.innerHTML = `<a href="../login.html" class="text-[#b06a3c] underline">Login</a>`;
+      }
+
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "../login.html";
+      }
+    </script>
+  </body>
+</html>

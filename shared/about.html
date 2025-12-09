@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tentang SEKN — Biar Bekas Tetap Berkelas</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              jakarta: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+    <!-- Header -->
+    <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold">SEKN</h1>
+        <nav class="space-x-4 flex items-center text-sm">
+          <a
+            href="../index.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Home</a
+          >
+          <a href="about.html" class="text-[#b06a3c] font-semibold underline"
+            >Tentang</a
+          >
+          <a
+            href="contact.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Kontak</a
+          >
+          <a href="../login.html" class="text-[#b06a3c] underline ml-2"
+            >Login</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section
+      class="bg-gradient-to-br from-[#fffaf3] to-[#f7f3ee] border-b border-[#e0d6cc]"
+    >
+      <div class="max-w-5xl mx-auto px-4 py-10">
+        <p
+          class="text-xs uppercase tracking-wide text-[#b06a3c] font-semibold mb-2"
+        >
+          Tentang SEKN
+        </p>
+        <h2 class="text-3xl font-bold text-[#3d2a22] mb-3">
+          Biar Bekas Tetap Berkelas
+        </h2>
+        <p class="text-sm text-[#6b5f55] max-w-2xl">
+          SEKN adalah prototipe marketplace handphone seken terverifikasi.
+          Fokusnya bukan cuma harga murah, tapi juga transparansi kondisi,
+          laporan inspeksi, dan badge resmi dari mitra servis terpercaya.
+        </p>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <main class="max-w-5xl mx-auto px-4 py-10 space-y-10">
+      <!-- Masalah -->
+      <section class="bg-[#fffaf3] rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-[#3d2a22] mb-3">
+          Masalah yang Ingin Diselesaikan
+        </h3>
+        <p class="text-sm text-[#3d2a22] mb-3">
+          Beli HP seken itu seringkali penuh ketidakpastian: takut barang
+          rekondisi, IMEI tidak jelas, baterai sudah drop, atau kondisi fisik
+          tidak sesuai foto. Di sisi lain, banyak penjual jujur yang kesulitan
+          meyakinkan pembeli bahwa barang mereka memang layak.
+        </p>
+        <ul class="list-disc list-inside text-sm text-[#6b5f55] space-y-1">
+          <li>
+            Pembeli sulit menilai kondisi sebenarnya hanya dari foto dan
+            caption.
+          </li>
+          <li>
+            Penjual jujur kalah saing dengan listing yang “dibagus-bagusin”.
+          </li>
+          <li>Tidak ada standar grade dan laporan inspeksi yang konsisten.</li>
+        </ul>
+      </section>
+
+      <!-- Solusi / Cara Kerja -->
+      <section class="bg-[#fffaf3] rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-[#3d2a22] mb-3">
+          Cara Kerja SEKN
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <p class="text-xs font-semibold text-[#b06a3c] mb-1">
+              1. Penjual Kirim Gadget
+            </p>
+            <p class="text-xs text-[#6b5f55]">
+              Penjual mendaftarkan HP seken, lalu mengirim perangkat ke mitra
+              servis / validator yang bekerja sama dengan SEKN.
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <p class="text-xs font-semibold text-[#b06a3c] mb-1">
+              2. Validator Inspeksi
+            </p>
+            <p class="text-xs text-[#6b5f55]">
+              Mitra memeriksa fisik, fungsi, IMEI, dan baterai. Hasilnya dicatat
+              dalam laporan inspeksi lengkap plus rekomendasi grade.
+            </p>
+          </div>
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <p class="text-xs font-semibold text-[#b06a3c] mb-1">
+              3. Badge & Listing
+            </p>
+            <p class="text-xs text-[#6b5f55]">
+              Produk yang lolos kriteria mendapat badge
+              <b>“SEKN Official Inspection”</b>
+              dan tampil di halaman pembeli dengan informasi yang lebih
+              transparan.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nilai Utama -->
+      <section class="bg-[#fffaf3] rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-[#3d2a22] mb-3">
+          Apa yang Dibawa SEKN?
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <p class="font-semibold text-[#3d2a22] mb-1">Transparansi</p>
+            <p class="text-xs text-[#6b5f55]">
+              Setiap produk bisa punya laporan inspeksi dan grade yang jelas,
+              bukan sekadar klaim “mulus seperti baru”.
+            </p>
+          </div>
+          <div>
+            <p class="font-semibold text-[#3d2a22] mb-1">Kepercayaan</p>
+            <p class="text-xs text-[#6b5f55]">
+              Mitra servis berperan sebagai pihak ketiga independen yang
+              memeriksa perangkat.
+            </p>
+          </div>
+          <div>
+            <p class="font-semibold text-[#3d2a22] mb-1">Kemudahan</p>
+            <p class="text-xs text-[#6b5f55]">
+              Pembeli cukup lihat badge & laporan, penjual cukup ikut alur
+              standar tanpa harus menjelaskan kondisi berkali-kali.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Catatan Prototipe -->
+      <section
+        class="bg-[#fffaf3] rounded-xl border border-dashed border-[#e0d6cc] p-5"
+      >
+        <h3 class="text-sm font-semibold text-[#3d2a22] mb-2">Catatan</h3>
+        <p class="text-xs text-[#6b5f55]">
+          Ini adalah prototipe frontend SEKN untuk kebutuhan mata kuliah /
+          tugas. Tidak ada transaksi nyata dan tidak terkoneksi ke sistem
+          pembayaran ataupun logistik.
+        </p>
+      </section>
+    </main>
+
+    <footer
+      class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]"
+    >
+      © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+    </footer>
+  </body>
+</html>

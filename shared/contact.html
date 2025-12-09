@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kontak & Feedback — SEKN</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              jakarta: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      #toast {
+        transition: opacity 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+    <!-- Header -->
+    <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold">SEKN</h1>
+        <nav class="space-x-4 flex items-center text-sm">
+          <a
+            href="../index.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Home</a
+          >
+          <a
+            href="about.html"
+            class="text-[#3d2a22] font-semibold hover:underline"
+            >Tentang</a
+          >
+          <a href="contact.html" class="text-[#b06a3c] font-semibold underline"
+            >Kontak</a
+          >
+          <a href="../login.html" class="text-[#b06a3c] underline ml-2"
+            >Login</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section
+      class="bg-gradient-to-br from-[#fffaf3] to-[#f7f3ee] border-b border-[#e0d6cc]"
+    >
+      <div class="max-w-5xl mx-auto px-4 py-10">
+        <p
+          class="text-xs uppercase tracking-wide text-[#b06a3c] font-semibold mb-2"
+        >
+          Kontak
+        </p>
+        <h2 class="text-3xl font-bold text-[#3d2a22] mb-3">
+          Kritik, Saran, atau Kolaborasi?
+        </h2>
+        <p class="text-sm text-[#6b5f55] max-w-2xl">
+          Sampaikan pendapatmu tentang SEKN: apa yang sudah oke, apa yang bisa
+          diperbaiki, atau ide fitur baru yang menarik buat kamu.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main -->
+    <main class="max-w-5xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
+      <!-- Form -->
+      <section class="md:col-span-2 bg-[#fffaf3] rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-[#3d2a22] mb-4">
+          Form Feedback (Simulasi)
+        </h3>
+        <form id="feedbackForm" class="space-y-4 text-sm">
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="nama"
+              >Nama</label
+            >
+            <input
+              id="nama"
+              type="text"
+              class="w-full rounded-md border border-[#e0d6cc] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#b06a3c]"
+              placeholder="Tulis nama kamu di sini"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="email"
+              >Email (opsional)</label
+            >
+            <input
+              id="email"
+              type="email"
+              class="w-full rounded-md border border-[#e0d6cc] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#b06a3c]"
+              placeholder="contoh@email.com"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="tipe"
+              >Tipe Feedback</label
+            >
+            <select
+              id="tipe"
+              class="w-full rounded-md border border-[#e0d6cc] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#b06a3c]"
+            >
+              <option value="saran">Saran fitur</option>
+              <option value="bug">Laporan bug / error</option>
+              <option value="pengalaman">Pengalaman penggunaan</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1" for="pesan"
+              >Pesan</label
+            >
+            <textarea
+              id="pesan"
+              rows="4"
+              class="w-full rounded-md border border-[#e0d6cc] px-3 py-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#b06a3c]"
+              placeholder="Tulis kritik atau saranmu..."
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            class="w-full md:w-auto px-5 py-2 bg-[#b06a3c] text-white font-semibold rounded-md hover:bg-[#a05d2f]"
+          >
+            Kirim (Simulasi)
+          </button>
+          <p class="text-[11px] text-[#6b5f55] mt-2">
+            Form ini hanya simulasi frontend. Data tidak benar-benar dikirim ke
+            server.
+          </p>
+        </form>
+      </section>
+
+      <!-- Info statis -->
+      <section class="bg-[#fffaf3] rounded-xl shadow p-6 text-sm">
+        <h3 class="text-base font-semibold text-[#3d2a22] mb-3">
+          Info Kontak (Dummy)
+        </h3>
+        <p class="text-xs text-[#6b5f55] mb-2">
+          Karena ini hanya prototipe, informasi di bawah ini bersifat contoh
+          saja:
+        </p>
+        <ul class="text-xs text-[#3d2a22] space-y-1">
+          <li>
+            <span class="font-semibold">Email:</span> support@sekn.app (dummy)
+          </li>
+          <li>
+            <span class="font-semibold">Instagram:</span> @sekn.id (dummy)
+          </li>
+          <li>
+            <span class="font-semibold">Alamat:</span> Kampus ITS, Surabaya
+            (contoh)
+          </li>
+        </ul>
+        <p class="text-[11px] text-[#6b5f55] mt-4">
+          Di versi production, halaman ini bisa dihubungkan ke sistem tiket,
+          formulir kontak, atau kanal CS resmi (WhatsApp, email, dsb.).
+        </p>
+      </section>
+    </main>
+
+    <footer
+      class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]"
+    >
+      © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+    </footer>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 bg-[#2b251f] text-white text-sm px-4 py-2 rounded-md shadow-lg hidden z-50"
+    >
+      Feedback terkirim (simulasi) ✔
+    </div>
+
+    <script>
+      const form = document.getElementById("feedbackForm");
+      const toast = document.getElementById("toast");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        toast.classList.remove("hidden");
+        toast.classList.add("opacity-100");
+        setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 2200);
+        form.reset();
+      });
+    </script>
+  </body>
+</html>
