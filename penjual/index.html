@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Jualan — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4 flex items-center">
+        <a href="../index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
+        <a href="sell.html" class="text-[#3d2a22] font-semibold hover:underline">Jual Barang</a>
+        <a href="earnings.html" class="text-[#3d2a22] font-semibold hover:underline">Pendapatan</a>
+        <span id="authArea" class="ml-4"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-bold mb-6">Daftar Barang Dijual</h2>
+    <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.getElementById("authArea");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      window.location.href = "../login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
+
+    const listings = JSON.parse(localStorage.getItem("listings") || "[]");
+    const container = document.getElementById("listingsContainer");
+
+    if (listings.length === 0) {
+      container.innerHTML = `<p class="text-center text-[#6b5f55]">Belum ada barang yang dijual.</p>`;
+    } else {
+      container.innerHTML = listings.map(item => `
+        <div class="bg-[#fffaf3] rounded-xl shadow p-4 flex flex-col">
+          <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover rounded-md mb-4" />
+          <h3 class="text-lg font-bold mb-1">${item.name}</h3>
+          <p class="text-sm text-[#6b5f55] mb-1">Rp ${item.price.toLocaleString("id-ID")}</p>
+          <p class="text-sm text-[#6b5f55] mb-1">Kondisi: ${item.condition}</p>
+          <p class="text-sm text-[#6b5f55] mb-2">Status: <span class="font-semibold text-[#3d2a22]">${item.status}</span></p>
+          <button class="mt-auto bg-white border border-[#d6cfc7] text-[#2b251f] font-semibold py-2 rounded-md hover:bg-[#f0eae4] transition">Edit</button>
+        </div>
+      `).join("");
+    }
+  </script>
+
+</body>
+</html>

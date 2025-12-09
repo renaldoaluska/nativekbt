@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jual Barang — SEKN</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f7f3ee] text-[#2b251f] font-jakarta">
+
+  <!-- Header -->
+  <header class="bg-[#fffaf3] shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">SEKN</h1>
+      <nav class="space-x-4 flex items-center">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Daftar Jualan</a>
+        <a href="earnings.html" class="text-[#3d2a22] font-semibold hover:underline">Pendapatan</a>
+        <span id="authArea" class="ml-4"></span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-xl mx-auto px-4 py-10">
+    <h2 class="text-2xl font-bold mb-6">Form Jual Barang</h2>
+    <form id="sellForm" class="space-y-4">
+      <input type="text" id="name" placeholder="Nama Produk" class="w-full p-3 rounded border border-[#d6cfc7]" required />
+      <input type="number" id="price" placeholder="Harga (Rp)" class="w-full p-3 rounded border border-[#d6cfc7]" required />
+      <select id="condition" class="w-full p-3 rounded border border-[#d6cfc7]" required>
+        <option value="">Pilih Kondisi</option>
+        <option value="Baru">Baru</option>
+        <option value="Bekas">Bekas</option>
+        <option value="Like New">Like New</option>
+      </select>
+      <textarea id="description" placeholder="Deskripsi Produk" rows="4" class="w-full p-3 rounded border border-[#d6cfc7]" required></textarea>
+      <input type="url" id="image" placeholder="Link Gambar Produk" class="w-full p-3 rounded border border-[#d6cfc7]" required />
+      <select id="location" class="w-full p-3 rounded border border-[#d6cfc7]" required>
+        <option value="">Pilih Lokasi Pengiriman</option>
+        <option value="Surabaya">Surabaya</option>
+        <option value="Jakarta">Jakarta</option>
+        <option value="Bandung">Bandung</option>
+      </select>
+      <button type="submit" class="w-full bg-[#b06a3c] text-white font-semibold py-3 rounded-md hover:bg-[#a05d2f] transition">Kirim</button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-[#6b5f55] py-6 border-t border-[#e0d6cc]">
+    © 2025 SEKN Prototype — Biar Bekas Tetap Berkelas
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authArea = document.getElementById("authArea");
+
+    if (user) {
+      authArea.innerHTML = `
+        <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
+        <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
+      `;
+    } else {
+      window.location.href = "../login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+    }
+
+    const form = document.getElementById("sellForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const newItem = {
+        id: Date.now(),
+        name: form.name.value.trim(),
+        price: parseInt(form.price.value),
+        condition: form.condition.value,
+        description: form.description.value.trim(),
+        image: form.image.value.trim(),
+        location: form.location.value,
+        status: "pending"
+      };
+
+      const listings = JSON.parse(localStorage.getItem("listings") || "[]");
+      listings.push(newItem);
+      localStorage.setItem("listings", JSON.stringify(listings));
+
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
