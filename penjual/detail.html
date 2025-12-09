@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Daftar Jualan — SEKN</title>
+  <title>Detail Barang — SEKN</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -29,6 +29,7 @@
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">SEKN</h1>
       <nav class="space-x-4 flex items-center">
+        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Daftar Jualan</a>
         <a href="sell.html" class="text-[#3d2a22] font-semibold hover:underline">Jual Barang</a>
         <span id="authArea" class="ml-4"></span>
       </nav>
@@ -36,9 +37,11 @@
   </header>
 
   <!-- Main -->
-  <main class="max-w-5xl mx-auto px-4 py-10">
-    <h2 class="text-2xl font-bold mb-6">Daftar Barang yang Kamu Jual</h2>
-    <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <div id="detailContainer" class="bg-[#fffaf3] p-6 rounded-xl shadow space-y-4"></div>
+    <div class="mt-6">
+      <button onclick="window.history.back()" class="bg-white border border-[#d6cfc7] text-[#2b251f] font-semibold px-6 py-3 rounded-md hover:bg-[#f0eae4] transition">← Kembali</button>
+    </div>
   </main>
 
   <!-- Footer -->
@@ -65,13 +68,11 @@
       window.location.reload();
     }
 
-    const container = document.getElementById("listingsContainer");
-
     const hardcoded = [
       {
         id: "iphone12",
         name: "iPhone 12 128GB",
-        description: "Lolos inspeksi. Layar mulus, baterai 90%, siap pakai.",
+        description: "Lolos inspeksi. Layar mulus, baterai 90%, siap pakai. Tidak ada kendala fungsi. Sudah diverifikasi oleh Aman Cell.",
         image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=800",
         validator: "Aman Cell — Surabaya",
         status: "verified"
@@ -79,7 +80,7 @@
       {
         id: "dummy-checking",
         name: "Samsung Galaxy A52",
-        description: "Sedang dicek oleh validator.",
+        description: "Sedang dicek oleh validator. Estimasi selesai 1–2 hari kerja.",
         image: "https://images.samsung.com/is/image/samsung/p6pim/id/sm-a525fzkhxid/gallery/id-galaxy-a52-5g-a525-sm-a525fzkhxid-368306-sm-a525fzkhxid-368306-Thumb-720x720",
         validator: "Servisindo Mobile — Jakarta",
         status: "checking"
@@ -89,43 +90,22 @@
     const listings = JSON.parse(localStorage.getItem("listings") || "[]");
     const allItems = [...hardcoded, ...listings];
 
-    if (allItems.length === 0) {
-      container.innerHTML = `<p class="text-center text-[#6b5f55]">Belum ada barang yang kamu jual.</p>`;
+    const params = new URLSearchParams(window.location.search);
+    const itemId = params.get("id");
+    const item = allItems.find(i => i.id === itemId);
+
+    const container = document.getElementById("detailContainer");
+
+    if (!item) {
+      container.innerHTML = `<p class="text-center text-[#6b5f55]">Barang tidak ditemukan.</p>`;
     } else {
-      container.innerHTML = allItems.map((item, index) => {
-        const isPending = item.status === "pending";
-        const isChecking = item.status === "checking";
-        const isVerified = item.status === "verified";
-        const isHardcoded = index < hardcoded.length;
-
-        const imageTag = `<img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover rounded-md mb-4" />`;
-        const content = `
-          <h3 class="text-lg font-bold mb-1">${item.name}</h3>
-          <p class="text-sm text-[#6b5f55] mb-1">${item.description.slice(0, 60)}...</p>
-          <p class="text-sm text-[#6b5f55] mb-1">Validator: ${item.validator}</p>
-          <p class="text-sm text-[#6b5f55] mb-2">Status: <span class="font-semibold text-[#3d2a22]">${item.status}</span></p>
-          ${
-            isPending
-              ? `<button onclick="cancelListing(${index - hardcoded.length})" class="mt-auto bg-red-100 text-red-700 font-semibold py-2 rounded-md hover:bg-red-200 transition">Batalkan</button>`
-              : isChecking
-              ? `<button disabled class="mt-auto bg-gray-200 text-gray-500 font-semibold py-2 rounded-md cursor-not-allowed">Sedang Dicek</button>`
-              : isVerified
-              ? `<a href="detail.html?id=${item.id}" class="mt-auto block text-center bg-[#b06a3c] text-white font-semibold py-2 rounded-md hover:bg-[#a05d2f] transition">Lihat Detail</a>`
-              : ``
-          }
-        `;
-
-        return `<div class="bg-[#fffaf3] rounded-xl shadow p-4 flex flex-col">${imageTag}${content}</div>`;
-      }).join("");
-    }
-
-    function cancelListing(index) {
-      const listings = JSON.parse(localStorage.getItem("listings") || "[]");
-      if (index >= 0 && index < listings.length) {
-        listings.splice(index, 1);
-        localStorage.setItem("listings", JSON.stringify(listings));
-        window.location.reload();
-      }
+      container.innerHTML = `
+        <img src="${item.image}" alt="${item.name}" class="w-full h-64 object-cover rounded-md mb-4" />
+        <h2 class="text-2xl font-bold">${item.name}</h2>
+        <p class="text-sm text-[#6b5f55] mb-2">Status: <span class="font-semibold text-[#3d2a22]">${item.status}</span></p>
+        <p class="text-sm text-[#6b5f55] mb-2">Validator: ${item.validator}</p>
+        <p class="text-base text-[#2b251f] whitespace-pre-line">${item.description}</p>
+      `;
     }
   </script>
 

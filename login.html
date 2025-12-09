@@ -24,12 +24,7 @@
   <header class="bg-[#fffaf3] shadow">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">SEKN</h1>
-      <nav class="space-x-4 flex items-center">
-        <a href="index.html" class="text-[#3d2a22] font-semibold hover:underline">Home</a>
-        <a href="cart.html" class="text-[#3d2a22] font-semibold hover:underline">Cart</a>
-        <a href="profile.html" class="text-[#3d2a22] font-semibold hover:underline">Profile</a>
-        <span id="authArea" class="ml-4"></span>
-      </nav>
+      <span id="authArea" class="text-sm text-[#3d2a22]"></span>
     </div>
   </header>
 
@@ -74,7 +69,10 @@
           hp: "08123456789"
         };
         localStorage.setItem("user", JSON.stringify(user));
-        window.location.href = "index.html";
+
+        const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "index.html";
+        sessionStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirectTo;
       } else {
         errorMsg.classList.remove("hidden");
       }
@@ -89,8 +87,6 @@
         <span class="text-[#3d2a22] font-semibold">Hi, ${user.nama}</span>
         <button onclick="logout()" class="text-[#b06a3c] underline ml-2">Logout</button>
       `;
-    } else {
-      authArea.innerHTML = `<a href="login.html" class="text-[#b06a3c] underline">Login</a>`;
     }
 
     function logout() {
